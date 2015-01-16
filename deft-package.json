@@ -1,0 +1,11 @@
+{
+  "name": "message-format",
+  "description": "",
+  "keywords": [
+  ],
+  "license": "MIT",
+  "default-target": "message-format",
+  "tests": [
+    "message-format-test-suite-app"
+  ]
+}
