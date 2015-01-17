@@ -4,4 +4,17 @@ Author: Bruce Mitchener, Jr.
 Copyright: See LICENSE file in this distribution.
 
 define class <select-format> (<format>)
+  constant slot select-mappings :: <sequence>,
+    required-init-keyword: mappings:;
+  constant slot select-default :: <message-format>,
+    required-init-keyword: default:;
 end class;
+
+define method format-message-part
+    (stream :: <stream>, part :: <select-format>, args)
+ => ()
+  let value = format-variable-value(part, args);
+  let result = get-property(part.select-mappings, value,
+                            default: part.select-default);
+  apply(format-message, stream, result, args);
+end;
