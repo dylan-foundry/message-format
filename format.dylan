@@ -3,7 +3,7 @@ Synopsis: The <format> base class.
 Author: Bruce Mitchener, Jr.
 Copyright: See LICENSE file in this distribution.
 
-define class <format> (<object>)
+define abstract class <format> (<object>)
   constant slot format-variable-name :: <symbol>,
     required-init-keyword: variable-name:;
 end class;
@@ -11,12 +11,6 @@ end class;
 define generic format-message-part
     (stream :: <stream>, part :: <format>, args)
  => ();
-
-define method format-message-part
-    (stream :: <stream>, part :: <format>, args)
- => ()
-  print-message(format-variable-value(part, args), stream);
-end method;
 
 // This is used as a tombstone for a default argument.
 define generic invalid () => ();

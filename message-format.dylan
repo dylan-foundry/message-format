@@ -8,6 +8,8 @@ define constant <string-or-format> = type-union(<string>, <format>);
 define constant <message-format-parts-vector>
   = limited(<vector>, of: <string-or-format>);
 
+define sealed domain as (singleton(<message-format-parts-vector>));
+
 define inline function message-parts (#rest args)
   as(<message-format-parts-vector>, args)
 end;
@@ -16,6 +18,9 @@ define class <message-format> (<object>)
   constant slot message-format-parts :: <message-format-parts-vector>,
     required-init-keyword: parts:;
 end class;
+
+define sealed domain make (singleton(<message-format>));
+define sealed domain initialize (<message-format>);
 
 define generic format-message
     (stream :: <stream>, message :: type-union(<string>, <message-format>),

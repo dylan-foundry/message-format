@@ -6,3 +6,4 @@ Files: library
        parse-message
        plural-format
        select-format
+       simple-format

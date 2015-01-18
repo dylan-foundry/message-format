@@ -14,7 +14,7 @@ define test format-basic-message-to-string-test ()
 end test;
 
 define test format-basic-variable-test ()
-  let vf = make(<format>, variable-name: name:);
+  let vf = make(<simple-format>, variable-name: name:);
   let m = make(<message-format>, parts: message-parts("Hello, ", vf, "."));
   assert-equal("Hello, John.", format-message-to-string(m, name: "John"));
 end test;

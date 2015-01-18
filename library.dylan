@@ -24,7 +24,8 @@ define module message-format
 
   export <format>,
          <plural-format>,
-         <select-format>;
+         <select-format>,
+         <simple-format>;
 
   export format-message-part;
 end module message-format;
