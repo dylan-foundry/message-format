@@ -8,7 +8,7 @@ define constant <string-or-format> = type-union(<string>, <format>);
 define constant <message-format-parts-vector>
   = limited(<vector>, of: <string-or-format>);
 
-define sealed domain as (singleton(<message-format-parts-vector>));
+define sealed domain as (singleton(<message-format-parts-vector>), <object>);
 
 define inline function message-parts (#rest args)
   as(<message-format-parts-vector>, args)
