@@ -33,9 +33,23 @@ define test basic-select-format-test ()
   assert-equal("It sat down.", format-message-to-string(m, gender: neuter:));
 end test;
 
+define test basic-plural-format-test ()
+  local method make-message (text :: <string>)
+          make(<message-format>, parts: message-parts(text))
+        end;
+  let pf = make(<plural-format>, variable-name: count:,
+                one: make-message("There is one."),
+                other: make-message("There is not only one."));
+  let m = make(<message-format>, parts: message-parts(pf));
+  assert-equal("There is one.", format-message-to-string(m, count: 1));
+  assert-equal("There is not only one.", format-message-to-string(m, count: 0));
+  assert-equal("There is not only one.", format-message-to-string(m, count: 2));
+end test;
+
 define suite message-format-test-suite ()
   test create-message-format-test;
   test format-basic-message-to-string-test;
   test format-basic-variable-test;
   test basic-select-format-test;
+  test basic-plural-format-test;
 end suite;
