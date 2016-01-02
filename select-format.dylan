@@ -14,7 +14,7 @@ define sealed domain make (singleton(<select-format>));
 define sealed domain initialize (<select-format>);
 
 define method format-message-part
-    (stream :: <stream>, part :: <select-format>, args)
+    (stream :: <stream>, part :: <select-format>, args :: <sequence>)
  => ()
   let value = format-variable-value(part, args);
   let result = get-property(part.select-mappings, value,

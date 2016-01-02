@@ -40,7 +40,7 @@ define method english-cardinal-classifier (value :: <integer>)
 end method;
 
 define method format-message-part
-    (stream :: <stream>, part :: <plural-format>, args)
+    (stream :: <stream>, part :: <plural-format>, args :: <sequence>)
  => ()
   let value = format-variable-value(part, args);
   let classifier = part.plural-classifier;
