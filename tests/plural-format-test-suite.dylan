@@ -24,7 +24,18 @@ define test offset-plural-format-test ()
   assert-equal("There is not only one.", format-message-to-string(m, count: 3));
 end test;
 
+define test missing-cases-plural-format-test ()
+  let pf = make(<plural-format>,
+                variable-name: count:,
+                other: make-message("Hit other."));
+  let m = make(<message-format>, parts: message-parts(pf));
+  assert-equal("Hit other.", format-message-to-string(m, count: 2));
+  assert-equal("Hit other.", format-message-to-string(m, count: 1));
+  assert-equal("Hit other.", format-message-to-string(m, count: 0));
+end test;
+
 define suite plural-format-test-suite ()
   test basic-plural-format-test;
   test offset-plural-format-test;
+  test missing-cases-plural-format-test;
 end suite;

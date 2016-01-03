@@ -18,8 +18,8 @@ define class <plural-format> (<format>)
     init-keyword: few:;
   constant slot plural-many-format :: false-or(<message-format>) = #f,
     init-keyword: many:;
-  constant slot plural-other-format :: false-or(<message-format>) = #f,
-    init-keyword: other:;
+  constant slot plural-other-format :: <message-format>,
+    required-init-keyword: other:;
 end class;
 
 define sealed domain make (singleton(<select-format>));
@@ -50,5 +50,7 @@ define method format-message-part
   let result = category(part);
   if (result)
     apply(format-message, stream, result, args);
+  else
+    apply(format-message, stream, part.plural-other-format, args);
   end if;
 end;
