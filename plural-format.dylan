@@ -6,6 +6,8 @@ Copyright: See LICENSE file in this distribution.
 define class <plural-format> (<format>)
   constant slot plural-classifier :: <function> = english-cardinal-classifier,
     init-keyword: rules:;
+  constant slot plural-offset :: <integer> = 0,
+    init-keyword: offset:;
   constant slot plural-zero-format :: false-or(<message-format>) = #f,
     init-keyword: zero:;
   constant slot plural-one-format :: false-or(<message-format>) = #f,
@@ -42,7 +44,7 @@ end method;
 define method format-message-part
     (stream :: <stream>, part :: <plural-format>, args :: <sequence>)
  => ()
-  let value = format-variable-value(part, args);
+  let value = format-variable-value(part, args) - part.plural-offset;
   let classifier = part.plural-classifier;
   let category :: <plural-category> = classifier(value);
   let result = category(part);
