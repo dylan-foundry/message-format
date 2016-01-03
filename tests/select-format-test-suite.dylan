@@ -2,9 +2,6 @@ module: message-format-test-suite
 synopsis: Test suite for the message-format library.
 
 define test basic-select-format-test ()
-  local method make-message (text :: <string>)
-          make(<message-format>, parts: message-parts(text))
-        end;
   let sf = make(<select-format>, variable-name: gender:,
                 mappings: vector(male:, make-message("He"),
                                  female: make-message("She")),
