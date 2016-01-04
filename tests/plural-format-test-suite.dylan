@@ -61,10 +61,47 @@ define test literal-values-plural-format-test ()
   assert-equal("Five", format-message-to-string(m, count: 5));
 end test;
 
+define test incorrect-literal-values-plural-format-test ()
+  assert-signals(<error>,
+                 make(<plural-format>,
+                      variable-name: count:,
+                      other: make-message("Other"),
+                      literal-values: vector(0, 2),
+                      literal-formats: vector(make-message("Zero"))),
+                 "Values and formats must have same length");
+  assert-signals(<error>,
+                 make(<plural-format>,
+                      variable-name: count:,
+                      other: make-message("Other"),
+                      literal-values: vector(0.0),
+                      literal-formats: vector(make-message("Zero"))),
+                 "Values must be integers");
+  assert-signals(<error>,
+                 make(<plural-format>,
+                      variable-name: count:,
+                      other: make-message("Other"),
+                      literal-values: vector(0),
+                      literal-formats: vector("Zero")),
+                 "Formats must be <message-format> instances");
+  assert-signals(<error>,
+                 make(<plural-format>,
+                      variable-name: count:,
+                      other: make-message("Other"),
+                      literal-values: vector(0)),
+                 "If literal values are supplied, then formats must be");
+  assert-signals(<error>,
+                 make(<plural-format>,
+                      variable-name: count:,
+                      other: make-message("Other"),
+                      literal-formats: vector(make-message("Zero"))),
+                 "If literal formats are supplied, then values must be");
+end test;
+
 define suite plural-format-test-suite ()
   test basic-plural-format-test;
   test offset-plural-format-test;
   test missing-cases-plural-format-test;
   test number-value-plural-format-test;
   test literal-values-plural-format-test;
+  test incorrect-literal-values-plural-format-test;
 end suite;
