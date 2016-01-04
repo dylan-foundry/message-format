@@ -22,8 +22,8 @@ define class <plural-format> (<format>)
     required-init-keyword: other:;
 end class;
 
-define sealed domain make (singleton(<select-format>));
-define sealed domain initialize (<select-format>);
+define sealed domain make (singleton(<plural-format>));
+define sealed domain initialize (<plural-format>);
 
 define constant <plural-category>
   = one-of(plural-zero-format,
