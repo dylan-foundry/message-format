@@ -34,8 +34,21 @@ define test missing-cases-plural-format-test ()
   assert-equal("Hit other.", format-message-to-string(m, count: 0));
 end test;
 
+define test number-value-plural-format-test ()
+  let pvp = make(<plural-value-placeholder>);
+  let pf = make(<plural-format>,
+                variable-name: count:,
+                one: make-message-from-parts(message-parts("There was ", pvp, " item.")),
+                other: make-message-from-parts(message-parts("There were ", pvp, " items.")));
+  let m = make(<message-format>, parts: message-parts(pf));
+  assert-equal("There were 0 items.", format-message-to-string(m, count: 0));
+  assert-equal("There was 1 item.", format-message-to-string(m, count: 1));
+  assert-equal("There were 2 items.", format-message-to-string(m, count: 2));
+end test;
+
 define suite plural-format-test-suite ()
   test basic-plural-format-test;
   test offset-plural-format-test;
   test missing-cases-plural-format-test;
+  test number-value-plural-format-test;
 end suite;

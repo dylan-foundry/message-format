@@ -44,13 +44,34 @@ end method;
 define method format-message-part
     (stream :: <stream>, part :: <plural-format>, args :: <sequence>)
  => ()
-  let value = format-variable-value(part, args) - part.plural-offset;
+  let value = format-variable-value(part, args);
+  let offset = part.plural-offset;
   let classifier = part.plural-classifier;
-  let category :: <plural-category> = classifier(value);
+  let category :: <plural-category> = classifier(value - offset);
   let result = category(part);
   if (result)
-    apply(format-message, stream, result, args);
+    format-plural-message(stream, result, value, offset, args);
   else
-    apply(format-message, stream, part.plural-other-format, args);
+    format-plural-message(stream, part.plural-other-format, value, offset, args);
   end if;
 end;
+
+define method format-plural-message
+    (stream :: <stream>, message-format :: <message-format>,
+     value :: <integer>, offset :: <integer>, args :: <sequence>)
+ => ()
+  for (part in message-format.message-format-parts)
+    select (part by instance?)
+      <string> => write(stream, part);
+      <plural-value-placeholder> => print-message(value - offset, stream);
+      otherwise => format-message-part(stream, part, args);
+    end;
+  end for;
+end method;
+
+define sealed class <plural-value-placeholder> (<format>)
+  inherited slot format-variable-name = #"invalid";
+end class;
+
+define sealed domain make (singleton(<plural-value-placeholder>));
+define sealed domain initialize (<plural-value-placeholder>);

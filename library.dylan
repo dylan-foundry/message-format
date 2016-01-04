@@ -27,5 +27,7 @@ define module message-format
          <select-format>,
          <simple-format>;
 
+  export <plural-value-placeholder>;
+
   export format-message-part;
 end module message-format;
