@@ -3,9 +3,16 @@ Synopsis: The <plural-format> class.
 Author: Bruce Mitchener, Jr.
 Copyright: See LICENSE file in this distribution.
 
+define constant <integer-vector>
+  = limited(<vector>, of: <integer>);
+
 define class <plural-format> (<format>)
   constant slot plural-classifier :: <function> = english-cardinal-classifier,
     init-keyword: rules:;
+  constant slot plural-literal-values :: false-or(<integer-vector>) = #f,
+    init-keyword: literal-values:;
+  constant slot plural-literal-formats :: false-or(<message-format-vector>) = #f,
+    init-keyword: literal-formats:;
   constant slot plural-offset :: <integer> = 0,
     init-keyword: offset:;
   constant slot plural-zero-format :: false-or(<message-format>) = #f,
@@ -22,7 +29,30 @@ define class <plural-format> (<format>)
     required-init-keyword: other:;
 end class;
 
-define sealed domain make (singleton(<plural-format>));
+define sealed method make
+    (class == <plural-format>,
+     #rest initargs,
+     #key literal-values, literal-formats,
+     #all-keys)
+ => (part :: <plural-format>)
+  if (literal-values | literal-formats)
+    if (~literal-values | ~literal-formats)
+      error("<plural-format> must be provided with both literal-values "
+            "and literal-formats");
+    end if;
+    if (size(literal-values) ~= size(literal-formats))
+      error("<plural-format> must be provided with the same number of "
+            "both literal-values and literal-formats");
+    end if;
+    apply(next-method, class,
+          literal-values: as(<integer-vector>, literal-values),
+          literal-formats: as(<message-format-vector>, literal-formats),
+          initargs)
+  else
+    apply(next-method, class, initargs)
+  end if
+end method;
+
 define sealed domain initialize (<plural-format>);
 
 define constant <plural-category>
@@ -46,14 +76,24 @@ define method format-message-part
  => ()
   let value = format-variable-value(part, args);
   let offset = part.plural-offset;
-  let classifier = part.plural-classifier;
-  let category :: <plural-category> = classifier(value - offset);
-  let result = category(part);
-  if (result)
-    format-plural-message(stream, result, value, offset, args);
-  else
-    format-plural-message(stream, part.plural-other-format, value, offset, args);
-  end if;
+  local method format-from-classifier ()
+          let classifier = part.plural-classifier;
+          let category :: <plural-category> = classifier(value - offset);
+          let result = category(part);
+          result | part.plural-other-format
+        end;
+  let format
+    = if (part.plural-literal-values)
+        let pos = find-key(part.plural-literal-values, curry(\=, value - offset));
+        if (pos)
+          part.plural-literal-formats[pos]
+        else
+          format-from-classifier()
+        end if
+      else
+        format-from-classifier()
+      end if;
+  format-plural-message(stream, format, value, offset, args);
 end;
 
 define method format-plural-message

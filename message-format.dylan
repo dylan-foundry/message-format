@@ -22,6 +22,9 @@ end class;
 define sealed domain make (singleton(<message-format>));
 define sealed domain initialize (<message-format>);
 
+define constant <message-format-vector>
+  = limited(<vector>, of: <message-format>);
+
 define generic format-message
     (stream :: <stream>, message :: type-union(<string>, <message-format>),
      #rest args, #key #all-keys)

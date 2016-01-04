@@ -46,9 +46,25 @@ define test number-value-plural-format-test ()
   assert-equal("There were 2 items.", format-message-to-string(m, count: 2));
 end test;
 
+define test literal-values-plural-format-test ()
+  let pf = make(<plural-format>,
+                variable-name: count:,
+                one: make-message("One"),
+                other: make-message("Other"),
+                literal-values: vector(0, 5),
+                literal-formats: vector(make-message("Zero"),
+                                        make-message("Five")));
+  let m = make(<message-format>, parts: message-parts(pf));
+  assert-equal("Zero", format-message-to-string(m, count: 0));
+  assert-equal("One", format-message-to-string(m, count: 1));
+  assert-equal("Other", format-message-to-string(m, count: 2));
+  assert-equal("Five", format-message-to-string(m, count: 5));
+end test;
+
 define suite plural-format-test-suite ()
   test basic-plural-format-test;
   test offset-plural-format-test;
   test missing-cases-plural-format-test;
   test number-value-plural-format-test;
+  test literal-values-plural-format-test;
 end suite;
